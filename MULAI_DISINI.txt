@@ -1,0 +1,104 @@
+================================================================================
+                    🚀 CARA MENJALANKAN APLIKASI 🚀
+================================================================================
+
+PILIH SALAH SATU CARA:
+
+================================================================================
+CARA 1: MENGGUNAKAN FILE BATCH (PALING MUDAH)
+================================================================================
+
+1. Double-click file: jalankan_aplikasi.bat
+
+2. Tunggu sampai muncul:
+   "CodeIgniter development server started on http://localhost:8080"
+
+3. Buka browser, ketik:
+   http://localhost:8080/perpus
+
+4. Selesai!
+
+
+================================================================================
+CARA 2: MENGGUNAKAN COMMAND PROMPT
+================================================================================
+
+1. Buka Command Prompt (CMD)
+
+2. Ketik perintah ini (copy-paste):
+   cd "c:\laragon\www\mentahan perpus (codignitter)\app_perpus - Copy"
+
+3. Tekan Enter
+
+4. Ketik perintah ini:
+   php spark serve
+
+5. Tekan Enter
+
+6. Tunggu sampai muncul:
+   "CodeIgniter development server started on http://localhost:8080"
+
+7. Buka browser, ketik:
+   http://localhost:8080/perpus
+
+8. Selesai!
+
+
+================================================================================
+KREDENSIAL LOGIN
+================================================================================
+
+ADMIN:
+------
+URL: http://localhost:8080/perpus/login-admin
+Username: admin
+Password: password
+
+SISWA:
+------
+URL: http://localhost:8080/perpus (form login ada di halaman ini)
+Username: siswa
+Password: 12345
+
+
+================================================================================
+JIKA MASIH ERROR
+================================================================================
+
+1. Pastikan Laragon sudah running (MySQL harus aktif)
+
+2. Pastikan database "perpus" sudah dibuat
+
+3. Jalankan perintah ini di CMD:
+   cd "c:\laragon\www\mentahan perpus (codignitter)\app_perpus - Copy"
+   php spark migrate
+   php spark db:seed UserSeeder
+   php spark db:seed BukuSeeder
+
+4. Coba jalankan lagi: php spark serve
+
+
+================================================================================
+CATATAN PENTING
+================================================================================
+
+❌ JANGAN buka dari Laragon langsung!
+   http://localhost/mentahan%20perpus... [SALAH!]
+
+✅ HARUS menggunakan php spark serve!
+   http://localhost:8080/perpus [BENAR!]
+
+
+================================================================================
+BUTUH BANTUAN?
+================================================================================
+
+Cek file-file ini:
+- TEST_ROUTE.md (untuk testing route)
+- CARA_MENJALANKAN.md (panduan lengkap)
+- writable/logs/ (jika ada error)
+
+
+================================================================================
+                        SELAMAT MENCOBA! 🎉
+================================================================================

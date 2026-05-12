@@ -1,0 +1,163 @@
+================================================================================
+                    ✅ INSTRUKSI FINAL - SUDAH DIPERBAIKI ✅
+================================================================================
+
+ROUTE SUDAH DIPERBAIKI!
+Sekarang aplikasi menggunakan route group yang lebih baik.
+
+================================================================================
+CARA MENJALANKAN (IKUTI LANGKAH INI):
+================================================================================
+
+LANGKAH 1: PASTIKAN LARAGON RUNNING
+------------------------------------
+- Buka Laragon
+- Klik "Start All"
+- Pastikan MySQL berwarna hijau (running)
+
+LANGKAH 2: JALANKAN SERVER
+------------------------------------
+Double-click file: jalankan_aplikasi.bat
+
+ATAU manual di Command Prompt:
+cd "c:\laragon\www\mentahan perpus (codignitter)\app_perpus - Copy"
+php spark serve
+
+LANGKAH 3: TUNGGU SAMPAI MUNCUL
+------------------------------------
+"CodeIgniter development server started on http://localhost:8080"
+
+LANGKAH 4: BUKA BROWSER
+------------------------------------
+Ketik salah satu URL ini:
+
+✅ http://localhost:8080/perpus
+✅ http://localhost:8080/
+
+Kedua URL di atas akan menampilkan halaman beranda yang sama!
+
+================================================================================
+URL LENGKAP APLIKASI:
+================================================================================
+
+BERANDA:
+--------
+http://localhost:8080/perpus
+http://localhost:8080/
+
+LOGIN ADMIN:
+------------
+http://localhost:8080/perpus/login-admin
+Username: admin
+Password: password
+
+DASHBOARD ADMIN:
+----------------
+http://localhost:8080/perpus/dashboard-admin
+
+KELOLA BUKU:
+------------
+http://localhost:8080/perpus/kelola-buku
+
+KATALOG (SISWA):
+----------------
+http://localhost:8080/perpus/katalog
+
+================================================================================
+JIKA MASIH ERROR 404:
+================================================================================
+
+1. STOP server (Ctrl+C di terminal)
+
+2. Jalankan perintah ini:
+   php spark cache:clear
+
+3. Cek route:
+   php spark routes | findstr "Perpus::index"
+   
+   Harus muncul:
+   | GET    | /        | » | \App\Controllers\Perpus::index
+   | GET    | perpus   | » | \App\Controllers\Perpus::index
+
+4. Jalankan server lagi:
+   php spark serve
+
+5. Akses: http://localhost:8080/perpus
+
+================================================================================
+TROUBLESHOOTING SPESIFIK:
+================================================================================
+
+ERROR: "404 Not Found"
+----------------------
+Penyebab: Route tidak terbaca
+Solusi:
+1. php spark cache:clear
+2. php spark serve
+3. Akses: http://localhost:8080/perpus
+
+ERROR: "Whoops!"
+----------------
+Penyebab: Error di controller/view
+Solusi:
+1. Cek file: writable/logs/log-*.php
+2. Lihat error message
+3. Pastikan database connection benar
+
+ERROR: "Database connection failed"
+-----------------------------------
+Solusi:
+1. Pastikan MySQL running di Laragon
+2. Buat database "perpus" di phpMyAdmin
+3. Jalankan: php spark migrate
+
+ERROR: "Table doesn't exist"
+-----------------------------
+Solusi:
+php spark migrate
+php spark db:seed UserSeeder
+php spark db:seed BukuSeeder
+
+================================================================================
+VERIFIKASI SISTEM:
+================================================================================
+
+Jalankan: cek_sistem.bat
+
+Harus muncul:
+[OK] File .env ada
+[OK] Controller Perpus ada
+[OK] View beranda ada
+
+================================================================================
+CATATAN PENTING:
+================================================================================
+
+✅ Route sudah menggunakan group untuk organisasi lebih baik
+✅ URL / dan /perpus mengarah ke halaman yang sama
+✅ Semua route sudah terdaftar dengan benar
+✅ Cache sudah di-clear
+
+❌ JANGAN akses dari Laragon langsung (http://localhost/mentahan...)
+✅ HARUS menggunakan php spark serve (http://localhost:8080)
+
+================================================================================
+JIKA SUDAH BERHASIL:
+================================================================================
+
+Setelah berhasil akses http://localhost:8080/perpus, Anda akan melihat:
+- Halaman beranda dengan form login siswa
+- Menu navigasi di atas
+- Section "Layanan Kami"
+- Footer
+
+Login sebagai:
+- ADMIN: Klik "Login sebagai Admin" → username: admin, password: password
+- SISWA: Isi form di beranda → username: siswa, password: 12345
+
+================================================================================
+                        SELAMAT MENCOBA! 🚀
+================================================================================
+
+Jika masih ada masalah, screenshot error dan cek file log di:
+writable/logs/
