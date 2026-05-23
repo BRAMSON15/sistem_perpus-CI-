@@ -107,18 +107,22 @@ class Siswa extends BaseController
         $userId = session()->get('user_id');
         $peminjaman_raw = $this->peminjamanModel->getPeminjamanWithDetails($userId);
         $sekarang = date('Y-m-d');
-        $denda_per_hari = 1000;
+        $denda_flat = 2000; // Denda flat rate untuk keterlambatan
 
         // Dynamically update status and pending fines
-        $peminjaman = array_map(function($p) use ($sekarang, $denda_per_hari) {
+        $peminjaman = array_map(function($p) use ($sekarang, $denda_flat) {
             if ($p['status'] == 'dipinjam' && $sekarang > $p['tanggal_kembali']) {
                 $p['status'] = 'terlambat';
                 
-                // Calculate pending fine (est. how much they owe right now)
+                // Calculate pending fine (flat rate: Rp 2000 untuk terlambat 1-3 hari atau lebih)
                 $tanggal_kembali = new \DateTime($p['tanggal_kembali']);
                 $tanggal_sekarang = new \DateTime($sekarang);
                 $diff = $tanggal_sekarang->diff($tanggal_kembali);
-                $p['denda'] = $diff->days * $denda_per_hari;
+                
+                // Jika terlambat, denda flat Rp 2000 (tidak peduli berapa hari terlambat)
+                if ($diff->days > 0) {
+                    $p['denda'] = $denda_flat;
+                }
             }
             return $p;
         }, $peminjaman_raw);

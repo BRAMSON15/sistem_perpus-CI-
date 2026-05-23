@@ -153,18 +153,22 @@ class Admin extends BaseController
         $peminjaman_raw = $this->peminjamanModel->getPeminjamanWithDetails(null, $keyword);
         $sekarang = date('Y-m-d');
 
-        $denda_per_hari = 1000;
+        $denda_flat = 2000; // Denda flat rate untuk keterlambatan
 
         // Dynamically update status and calculate pending fines
-        $peminjaman = array_map(function($p) use ($sekarang, $denda_per_hari) {
+        $peminjaman = array_map(function($p) use ($sekarang, $denda_flat) {
             if ($p['status'] == 'dipinjam' && $sekarang > $p['tanggal_kembali']) {
                 $p['status'] = 'terlambat';
                 
-                // Calculate pending fine for display
+                // Calculate pending fine (flat rate: Rp 2000 untuk terlambat 1-3 hari atau lebih)
                 $tanggal_kembali = new \DateTime($p['tanggal_kembali']);
                 $tanggal_sekarang = new \DateTime($sekarang);
                 $diff = $tanggal_sekarang->diff($tanggal_kembali);
-                $p['denda'] = $diff->days * $denda_per_hari;
+                
+                // Jika terlambat, denda flat Rp 2000 (tidak peduli berapa hari terlambat)
+                if ($diff->days > 0) {
+                    $p['denda'] = $denda_flat;
+                }
             }
             return $p;
         }, $peminjaman_raw);
@@ -192,12 +196,15 @@ class Admin extends BaseController
         $tanggal_kembali = new \DateTime($peminjaman['tanggal_kembali']);
         $tanggal_sekarang = new \DateTime(date('Y-m-d'));
         $denda = 0;
-        $denda_per_hari = 1000; // Harga denda per hari keterlambatan
+        $denda_flat = 2000; // Denda flat rate untuk keterlambatan
 
         if ($tanggal_sekarang > $tanggal_kembali) {
             $diff = $tanggal_sekarang->diff($tanggal_kembali);
             $hari_terlambat = $diff->days;
-            $denda = $hari_terlambat * $denda_per_hari;
+            // Denda flat Rp 2000 untuk terlambat 1-3 hari atau lebih (tidak ada kenaikan)
+            if ($hari_terlambat > 0) {
+                $denda = $denda_flat;
+            }
         }
 
         // Update peminjaman
@@ -380,15 +387,18 @@ class Admin extends BaseController
         // 2. Laporan Aktivitas Peminjaman
         $laporan_raw = $this->peminjamanModel->getLaporanPeminjaman($startDate, $endDate);
         $sekarang = date('Y-m-d');
-        $denda_per_hari = 1000;
+        $denda_flat = 2000; // Denda flat rate untuk keterlambatan
 
-        $data['laporan_peminjaman'] = array_map(function($p) use ($sekarang, $denda_per_hari) {
+        $data['laporan_peminjaman'] = array_map(function($p) use ($sekarang, $denda_flat) {
             if ($p['status'] == 'dipinjam' && $sekarang > $p['tanggal_kembali']) {
                 $p['status'] = 'terlambat';
                 $tanggal_kembali = new \DateTime($p['tanggal_kembali']);
                 $tanggal_sekarang = new \DateTime($sekarang);
                 $diff = $tanggal_sekarang->diff($tanggal_kembali);
-                $p['denda'] = $diff->days * $denda_per_hari;
+                // Denda flat Rp 2000 untuk terlambat 1-3 hari atau lebih (tidak ada kenaikan)
+                if ($diff->days > 0) {
+                    $p['denda'] = $denda_flat;
+                }
             }
             return $p;
         }, $laporan_raw);
