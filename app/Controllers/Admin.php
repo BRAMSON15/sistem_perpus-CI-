@@ -66,6 +66,11 @@ class Admin extends BaseController
             'tersedia' => $this->request->getPost('stok'),
         ];
 
+        // Jika kategori adalah Kurikulum, simpan tipe kurikulum
+        if ($data['kategori'] === 'Kurikulum') {
+            $data['kurikulum_tipe'] = $this->request->getPost('kurikulum_tipe');
+        }
+
         // Handle upload gambar
         $gambar = $this->request->getFile('gambar');
         if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
@@ -112,6 +117,13 @@ class Admin extends BaseController
             'kategori' => $this->request->getPost('kategori'),
             'stok' => $this->request->getPost('stok'),
         ];
+
+        // Jika kategori adalah Kurikulum, simpan tipe kurikulum
+        if ($data['kategori'] === 'Kurikulum') {
+            $data['kurikulum_tipe'] = $this->request->getPost('kurikulum_tipe');
+        } else {
+            $data['kurikulum_tipe'] = null;
+        }
 
         // Handle upload gambar
         $gambar = $this->request->getFile('gambar');

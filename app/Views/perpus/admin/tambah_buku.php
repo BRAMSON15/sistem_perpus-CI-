@@ -27,7 +27,6 @@
                 <div class="form-solid">
                     <form action="<?= base_url('perpus/simpan-buku') ?>" method="post" enctype="multipart/form-data">
                         <?= csrf_field() ?>
-                        
                         <div class="form-row-modern">
                             <div class="form-group-modern">
                                 <label for="kode_buku">Kode Referensi</label>
@@ -36,25 +35,28 @@
                             
                             <div class="form-group-modern">
                                 <label for="kategori">Kategori Buku</label>
-                                <select id="kategori" name="kategori" required>
+                                <select id="kategori" name="kategori" required onchange="updateKurikulum()">
                                     <option value="">Pilih Kategori</option>
                                     <option value="Fiksi">Fiksi</option>
                                     <option value="Non-Fiksi">Non-Fiksi</option>
-                                    <option value="Sains">Sains</option>
-                                    <option value="Teknologi">Teknologi</option>
-                                    <option value="Sejarah">Sejarah</option>
-                                    <option value="Biografi">Biografi</option>
-                                    <option value="Pendidikan">Pendidikan</option>
-                                    <option value="Agama">Agama</option>
                                 </select>
                             </div>
+                        </div>
+
+                        <div class="form-group-modern">
+                            <label for="kurikulum">Kurikulum</label>
+                            <select id="kurikulum" name="kurikulum">
+                                <option value="">-- Pilih Kurikulum --</option>
+                                <option value="KTSP 2006">KTSP 2006</option>
+                                <option value="Kurikulum 2013">Kurikulum 2013</option>
+                                <option value="Kurikulum Merdeka">Kurikulum Merdeka</option>
+                            </select>
                         </div>
 
                         <div class="form-group-modern">
                             <label for="judul">Judul Lengkap Buku</label>
                             <input type="text" id="judul" name="judul" placeholder="Masukkan judul utama buku" required>
                         </div>
-
                         <div class="form-row-modern">
                             <div class="form-group-modern">
                                 <label for="pengarang">Penulis / Pengarang</label>
@@ -112,6 +114,10 @@
     </div>
 
     <script>
+        function updateKurikulum() {
+            // Fungsi ini dipanggil saat kategori berubah (dipertahankan untuk kompatibilitas)
+        }
+
         function previewImage(event) {
             const file = event.target.files[0];
             if (file) {

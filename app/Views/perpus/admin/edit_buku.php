@@ -36,12 +36,21 @@
                             
                             <div class="form-group-modern">
                                 <label for="kategori">Kategori Buku</label>
-                                <select id="kategori" name="kategori" required>
+                                <select id="kategori" name="kategori" required onchange="updateKurikulum()">
                                     <option value="">Pilih Kategori</option>
-                                    <?php $cats = ['Fiksi', 'Non-Fiksi', 'Sains', 'Teknologi', 'Sejarah', 'Biografi', 'Pendidikan', 'Agama']; ?>
-                                    <?php foreach($cats as $cat): ?>
-                                        <option value="<?= $cat ?>" <?= $buku['kategori'] == $cat ? 'selected' : '' ?>><?= $cat ?></option>
-                                    <?php endforeach; ?>
+                                    <option value="Fiksi" <?= $buku['kategori'] == 'Fiksi' ? 'selected' : '' ?>>Fiksi</option>
+                                    <option value="Non-Fiksi" <?= $buku['kategori'] == 'Non-Fiksi' ? 'selected' : '' ?>>Non-Fiksi</option>
+                                    <option value="Kurikulum" <?= $buku['kategori'] == 'Kurikulum' ? 'selected' : '' ?>>Kurikulum</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group-modern" id="kurikulum-tipe-container" style="display: none;">
+                                <label for="kurikulum_tipe">Tipe Kurikulum</label>
+                                <select id="kurikulum_tipe" name="kurikulum_tipe">
+                                    <option value="">Pilih Kurikulum</option>
+                                    <option value="Kurikulum 2013" <?= ($buku['kurikulum_tipe'] ?? '') == 'Kurikulum 2013' ? 'selected' : '' ?>>Kurikulum 2013</option>
+                                    <option value="KTSP 2006" <?= ($buku['kurikulum_tipe'] ?? '') == 'KTSP 2006' ? 'selected' : '' ?>>KTSP 2006</option>
+                                    <option value="Kurikulum Merdeka" <?= ($buku['kurikulum_tipe'] ?? '') == 'Kurikulum Merdeka' ? 'selected' : '' ?>>Kurikulum Merdeka</option>
                                 </select>
                             </div>
                         </div>
@@ -116,6 +125,26 @@
     </div>
 
     <script>
+        function updateKurikulum() {
+            const kategori = document.getElementById('kategori').value;
+            const kuriculumTipeContainer = document.getElementById('kurikulum-tipe-container');
+            const kuriculumTipe = document.getElementById('kurikulum_tipe');
+            
+            if (kategori === 'Kurikulum') {
+                kuriculumTipeContainer.style.display = 'block';
+                kuriculumTipe.setAttribute('required', 'required');
+            } else {
+                kuriculumTipeContainer.style.display = 'none';
+                kuriculumTipe.removeAttribute('required');
+                kuriculumTipe.value = '';
+            }
+        }
+
+        // Panggil saat halaman load untuk menampilkan kurikulum jika kategori sudah "Kurikulum"
+        document.addEventListener('DOMContentLoaded', function() {
+            updateKurikulum();
+        });
+
         function previewImage(event) {
             const file = event.target.files[0];
             if (file) {
