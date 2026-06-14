@@ -172,6 +172,10 @@ class Perpus extends BaseController
         $data['total_denda_pending'] = $peminjamanModel->where('is_denda_lunas', 0)->selectSum('denda')->get()->getRow()->denda ?? 0;
         $data['total_denda'] = $data['total_denda_pending']; // For backward compatibility with existing views if any
 
+        // Aktivitas scan kartu terbaru
+        $cardScanModel = new \App\Models\CardScanModel();
+        $data['scan_activities'] = $cardScanModel->getScanActivity(20);
+
         return $this->renderView('perpus/dashboard_admin', $data);
     }
 

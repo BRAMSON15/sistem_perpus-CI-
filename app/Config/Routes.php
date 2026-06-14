@@ -56,6 +56,11 @@ $routes->group('perpus', function($routes) {
     $routes->post('update-user/(:num)', 'Admin::updateUser/$1');
     $routes->get('hapus-user/(:num)', 'Admin::hapusUser/$1');
     
+    // Admin - Kartu Perpustakaan & Scan
+    $routes->get('cetak-kartu/(:num)', 'Admin::cetakKartu/$1');
+    $routes->get('scan-kartu', 'Admin::scanKartu');
+    $routes->post('proses-scan-kartu', 'Admin::prosesScanKartu');
+    
     // Siswa
     $routes->get('katalog', 'Siswa::katalog');
     $routes->get('pinjam-buku/(:num)', 'Siswa::pinjamBuku/$1');

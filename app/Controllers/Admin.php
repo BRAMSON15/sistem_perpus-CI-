@@ -4,6 +4,7 @@ use App\Models\BukuModel;
 use App\Models\PeminjamanModel;
 use App\Models\UserModel;
 use App\Models\NotificationModel;
+use App\Models\CardScanModel;
 
 class Admin extends BaseController
 {
@@ -11,6 +12,7 @@ class Admin extends BaseController
     protected $peminjamanModel;
     protected $userModel;
     protected $notificationModel;
+    protected $cardScanModel;
 
     public function __construct()
     {
@@ -18,6 +20,7 @@ class Admin extends BaseController
         $this->peminjamanModel = new PeminjamanModel();
         $this->userModel = new UserModel();
         $this->notificationModel = new NotificationModel();
+        $this->cardScanModel = new CardScanModel();
     }
 
     private function renderAdminView($view, $data = [])
@@ -432,5 +435,87 @@ class Admin extends BaseController
         $data['end_date'] = $endDate;
 
         return $this->renderAdminView('perpus/admin/kelola_laporan', $data);
+    }
+
+    /**
+     * Cetak kartu perpustakaan untuk user tertentu
+     */
+    public function cetakKartu($id)
+    {
+        if ($redirect = $this->checkAdmin()) return $redirect;
+
+        $user = $this->userModel->find($id);
+        if (!$user) {
+            return redirect()->to(base_url('perpus/kelola-user'))->with('error', 'User tidak ditemukan!');
+        }
+
+        $data = [
+            'username' => session()->get('nama_lengkap') ?: session()->get('username'),
+            'user' => $user,
+            'barcode_value' => 'LIB-' . str_pad($user['id'], 5, '0', STR_PAD_LEFT)
+        ];
+
+        return view('perpus/admin/cetak_kartu', $data);
+    }
+
+    /**
+     * Halaman scan kartu perpustakaan
+     */
+    public function scanKartu()
+    {
+        if ($redirect = $this->checkAdmin()) return $redirect;
+
+        $data = [
+            'username' => session()->get('nama_lengkap') ?: session()->get('username'),
+            'scan_today' => $this->cardScanModel->getTodayScanActivity()
+        ];
+
+        return $this->renderAdminView('perpus/admin/scan_kartu', $data);
+    }
+
+    /**
+     * Proses scan kartu (AJAX endpoint)
+     */
+    public function prosesScanKartu()
+    {
+        if (!session()->get('logged_in') || session()->get('user_type') !== 'admin') {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Unauthorized']);
+        }
+
+        $barcodeValue = $this->request->getPost('barcode');
+        
+        // Parse barcode: format LIB-XXXXX
+        if (!preg_match('/^LIB-(\d+)$/', $barcodeValue, $matches)) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Format barcode tidak valid! Format yang benar: LIB-XXXXX'
+            ]);
+        }
+
+        $userId = intval($matches[1]);
+        $user = $this->userModel->find($userId);
+
+        if (!$user) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'User dengan barcode tersebut tidak ditemukan!'
+            ]);
+        }
+
+        // Catat scan
+        $this->cardScanModel->recordScan($userId);
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Scan berhasil dicatat!',
+            'data' => [
+                'nama' => $user['nama_lengkap'],
+                'kelas' => $user['kelas'],
+                'username' => $user['username'],
+                'waktu' => date('H:i:s'),
+                'tanggal' => date('d M Y'),
+                'status' => 'aktif'
+            ]
+        ]);
     }
 }

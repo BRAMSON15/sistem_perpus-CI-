@@ -27,6 +27,10 @@
             <i class="bi bi-people-fill"></i>
             <span>Kelola User</span>
         </a>
+        <a href="<?= base_url('perpus/scan-kartu') ?>" class="menu-item <?= strpos(uri_string(), 'scan-kartu') !== false ? 'active' : '' ?>">
+            <i class="bi bi-upc-scan"></i>
+            <span>Scan Kartu</span>
+        </a>
         <a href="<?= base_url('perpus/kelola-laporan') ?>" class="menu-item <?= strpos(uri_string(), 'kelola-laporan') !== false || strpos(uri_string(), 'tambah-laporan') !== false || strpos(uri_string(), 'edit-laporan') !== false ? 'active' : '' ?>">
             <i class="bi bi-file-earmark-text-fill"></i>
             <span>Kelola Laporan</span>

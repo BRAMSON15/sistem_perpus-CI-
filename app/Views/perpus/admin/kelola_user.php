@@ -89,6 +89,12 @@
                                         <td style="font-size: 0.85rem; color: #95a5a6;"><?= date('d M Y', strtotime($u['created_at'])) ?></td>
                                         <td style="text-align: right;">
                                             <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                                <a href="<?= base_url('perpus/cetak-kartu/' . $u['id']) ?>" 
+                                                   class="btn-primary-modern" target="_blank"
+                                                   title="Cetak Kartu Perpustakaan"
+                                                   style="padding: 8px 12px; font-size: 0.85rem; background: #e8f8f5; color: #1abc9c; box-shadow: none;">
+                                                    <i class="bi bi-printer-fill"></i> Cetak Kartu
+                                                </a>
                                                 <a href="<?= base_url('perpus/edit-user/' . $u['id']) ?>" class="btn-primary-modern" style="padding: 8px 12px; font-size: 0.85rem; background: #f1f2f6; color: #34495e; box-shadow: none;">
                                                     <i class="bi bi-pencil-square"></i> Edit
                                                 </a>
