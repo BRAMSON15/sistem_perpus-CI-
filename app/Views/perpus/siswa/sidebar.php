@@ -24,10 +24,10 @@
             <?php endif; ?>
         </a>
         <div class="menu-divider"></div>
-        <a href="<?= base_url('perpus/ubah-password') ?>" class="menu-item <?= strpos(uri_string(), 'perpus/ubah-password') !== false ? 'active' : '' ?>">
+        <!-- <a href="<?= base_url('perpus/ubah-password') ?>" class="menu-item <?= strpos(uri_string(), 'perpus/ubah-password') !== false ? 'active' : '' ?>">
             <i class="bi bi-shield-lock-fill"></i>
             <span>Ubah Password</span>
-        </a>
+        </a> -->
         <!-- <a href="<?= base_url('perpus/logout') ?>" class="menu-item" style="color: #ff6b6b; margin-top: auto;">
             <i class="bi bi-box-arrow-right"></i>
             <span>Keluar Sesi</span>

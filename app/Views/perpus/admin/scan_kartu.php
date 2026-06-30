@@ -269,16 +269,29 @@
                         <h3><i class="bi bi-upc-scan"></i> Scan Barcode</h3>
                         <p class="subtitle">Masukkan atau scan kode barcode kartu perpustakaan siswa</p>
 
-                        <div class="scan-input-group">
+                        <div class="scan-input-group" style="margin-bottom: 15px;">
                             <input type="text" 
                                    id="barcodeInput" 
                                    class="scan-input" 
                                    placeholder="Contoh: LIB-00001" 
                                    autocomplete="off"
                                    autofocus>
-                            <button type="button" id="btnScan" class="btn-scan" onclick="prosesScan()">
+                            <button type="button" id="btnScan" class="btn-scan" onclick="prosesScan()" style="background: #3498db;">
                                 <i class="bi bi-search"></i> Scan
                             </button>
+                        </div>
+                        <button type="button" id="btnKamera" class="btn-scan" onclick="toggleKamera()" style="width: 100%; justify-content: center; background: #8e44ad;">
+                            <i class="bi bi-camera-video-fill"></i> Mulai Scan via Kamera
+                        </button>
+
+                        <!-- Video Camera Preview -->
+                        <div id="cameraContainer" style="display: none; margin-bottom: 20px;">
+                            <div id="reader" style="width: 100%; border-radius: 12px; overflow: hidden; border: 2px solid rgba(52, 152, 219, 0.3);"></div>
+                            <div style="display: flex; gap: 10px; margin-top: 12px;">
+                                <button type="button" id="btnCloseCamera" class="btn-scan" style="flex: 1; background: #e74c3c;" onclick="closeKamera()">
+                                    <i class="bi bi-x-circle"></i> Tutup
+                                </button>
+                            </div>
                         </div>
 
                         <div id="scanResult" class="scan-result">
@@ -353,9 +366,12 @@
         </div>
     </div>
 
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <script>
         const barcodeInput = document.getElementById('barcodeInput');
         const btnScan = document.getElementById('btnScan');
+        const btnKamera = document.getElementById('btnKamera');
+        const cameraContainer = document.getElementById('cameraContainer');
         const scanResult = document.getElementById('scanResult');
         const resultIcon = document.getElementById('resultIcon');
         const resultTitle = document.getElementById('resultTitle');
@@ -364,6 +380,8 @@
         const scanTableBody = document.getElementById('scanTableBody');
         const scanCount = document.getElementById('scanCount');
         let currentScanCount = <?= count($scan_today) ?>;
+        
+        let html5QrCode = null;
 
         // Enter key to scan
         barcodeInput.addEventListener('keydown', function(e) {
@@ -373,6 +391,62 @@
             }
         });
 
+        // Toggle Kamera
+        function toggleKamera() {
+            if (cameraContainer.style.display === 'none') {
+                openKamera();
+            } else {
+                closeKamera();
+            }
+        }
+
+        // Open Camera
+        function openKamera() {
+            cameraContainer.style.display = 'block';
+            btnKamera.innerHTML = '<i class="bi bi-camera-video-off-fill"></i> Tutup Kamera';
+            btnKamera.style.background = '#e74c3c';
+            
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode("reader");
+            }
+            
+            const config = { fps: 10, qrbox: { width: 250, height: 100 } };
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+            .catch((err) => {
+                alert('Akses kamera ditolak atau kamera tidak tersedia.\n\nPastikan Anda:\n1. Mengizinkan akses kamera\n2. Menggunakan HTTPS atau localhost');
+                console.error('Error accessing camera:', err);
+                closeKamera();
+            });
+        }
+
+        // Close Camera
+        function closeKamera() {
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop().then(() => {
+                    hideCameraUI();
+                }).catch(err => {
+                    console.error("Failed to stop scanning", err);
+                    hideCameraUI();
+                });
+            } else {
+                hideCameraUI();
+            }
+        }
+        
+        function hideCameraUI() {
+            cameraContainer.style.display = 'none';
+            btnKamera.innerHTML = '<i class="bi bi-camera-video-fill"></i> Mulai Scan via Kamera';
+            btnKamera.style.background = '#8e44ad';
+        }
+
+        // On successful scan
+        function onScanSuccess(decodedText, decodedResult) {
+            // Stop scanning once successful
+            closeKamera();
+            barcodeInput.value = decodedText;
+            prosesScanDenganBarcode(decodedText);
+        }
+
         function prosesScan() {
             const barcode = barcodeInput.value.trim();
             if (!barcode) {
@@ -380,7 +454,10 @@
                 barcodeInput.focus();
                 return;
             }
+            prosesScanDenganBarcode(barcode);
+        }
 
+        function prosesScanDenganBarcode(barcode) {
             btnScan.disabled = true;
             btnScan.innerHTML = '<i class="bi bi-hourglass-split"></i> Memproses...';
 
@@ -482,6 +559,11 @@
                 scanTableBody.appendChild(newRow);
             }
         }
+
+        // Clean up camera when page is closed
+        window.addEventListener('beforeunload', () => {
+            closeKamera();
+        });
     </script>
 </body>
 </html>

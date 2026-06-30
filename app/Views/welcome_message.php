@@ -32,7 +32,6 @@
             </li>
         </ul>
     </div>
-
     <div class="heroe">
 
         <h1>Welcome to CodeIgniter <?= CodeIgniter\CodeIgniter::CI_VERSION ?></h1>
